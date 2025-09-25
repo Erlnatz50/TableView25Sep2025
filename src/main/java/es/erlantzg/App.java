@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * - Registrar mensajes de log con SLF4J.
  * Contiene también el metodo {@link #main(String[])} para lanzar la aplicación.
  *
- * @author Erlantz Garcia
+ * @author Erlantz García
  * @version 1.0
  */
 public class App extends Application {
@@ -35,7 +35,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         try{
-            logger.debug("Intentando cargar el FXML: /fxml/flowpane12Sep.fxml");
+            logger.debug("Intentando cargar el FXML: /fxml/visualizarCliente.fxml");
             FXMLLoader loaded = new FXMLLoader(getClass().getResource("/fxml/visualizarCliente.fxml"));
             Scene scene = new Scene(loaded.load());
             logger.info("FXML cargado correctamente");
