@@ -1,0 +1,32 @@
+2025-09-25 12:09:48 INFO  es.erlantzg.App - Iniciando aplicación JavaFX...
+2025-09-25 12:09:48 DEBUG es.erlantzg.App - Intentando cargar el FXML: /fxml/flowpane12Sep.fxml
+2025-09-25 12:09:48 INFO  es.erlantzg.App - FXML cargado correctamente
+2025-09-25 12:09:48 DEBUG es.erlantzg.App - Buscando el archivo CSS
+2025-09-25 12:09:48 INFO  es.erlantzg.App - CSS cargado correctamente
+2025-09-25 12:09:48 INFO  es.erlantzg.App - Cargar la aplicación
+2025-09-25 12:10:08 INFO  es.erlantzg.App - Aplicación finalizada correctamente
+2025-09-25 12:17:39 INFO  es.erlantzg.App - Iniciando aplicación JavaFX...
+2025-09-25 12:17:39 DEBUG es.erlantzg.App - Intentando cargar el FXML: /fxml/flowpane12Sep.fxml
+2025-09-25 12:17:39 ERROR es.erlantzg.App - Error al intentar cargar la aplicación
+javafx.fxml.LoadException: No controller specified.
+/C:/Users/dm2/Documents/DEIN/TableView25Sep2025/target/classes/fxml/visualizarCliente.fxml:35
+
+	at javafx.fxml/javafx.fxml.FXMLLoader.constructLoadException(FXMLLoader.java:2621)
+	at javafx.fxml/javafx.fxml.FXMLLoader$Element.getControllerMethodHandle(FXMLLoader.java:565)
+	at javafx.fxml/javafx.fxml.FXMLLoader$Element.processEventHandlerAttributes(FXMLLoader.java:607)
+	at javafx.fxml/javafx.fxml.FXMLLoader$ValueElement.processEndElement(FXMLLoader.java:778)
+	at javafx.fxml/javafx.fxml.FXMLLoader.processEndElement(FXMLLoader.java:2838)
+	at javafx.fxml/javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:2557)
+	at javafx.fxml/javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:2466)
+	at javafx.fxml/javafx.fxml.FXMLLoader.load(FXMLLoader.java:2435)
+	at es.erlantzg/es.erlantzg.App.start(App.java:40)
+	at javafx.graphics/com.sun.javafx.application.LauncherImpl.lambda$launchApplication1$9(LauncherImpl.java:846)
+	at javafx.graphics/com.sun.javafx.application.PlatformImpl.lambda$runAndWait$12(PlatformImpl.java:455)
+	at javafx.graphics/com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:428)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:138)
+	at javafx.graphics/com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:427)
+	at javafx.graphics/com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:96)
+	at javafx.graphics/com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at javafx.graphics/com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:174)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+2025-09-25 12:17:45 INFO  es.erlantzg.App - Aplicación finalizada correctamente

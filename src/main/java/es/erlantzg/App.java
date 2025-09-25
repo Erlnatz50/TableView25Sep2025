@@ -36,7 +36,7 @@ public class App extends Application {
     public void start(Stage stage) {
         try{
             logger.debug("Intentando cargar el FXML: /fxml/flowpane12Sep.fxml");
-            FXMLLoader loaded = new FXMLLoader(getClass().getResource("/fxml/formularioGridPane19Sep.fxml"));
+            FXMLLoader loaded = new FXMLLoader(getClass().getResource("/fxml/visualizarCliente.fxml"));
             Scene scene = new Scene(loaded.load());
             logger.info("FXML cargado correctamente");
 
