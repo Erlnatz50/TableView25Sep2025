@@ -1,6 +1,12 @@
+## 📖 Fecha de creación
 Ejercicio creado el 25 de Septiembre de 2025
-- Archivos .java: App.java, Lanzador.java y PruebaController.java
-- Archivo .css: estilo.css
-- Archivo .fxml: plantilla.fxml
-- Archivo .xml: logback.xml
-- Archivo .mf: MANIFEST.MF
+
+## 📂 Archivos más improtantes del proyecto
+- Archivos java: App, Lanzador, Persona, PersonaDAO y VisualizarCliente
+- Archivo css: estilo
+- Archivo fxml: visualizarCliente
+- Archivo xml: logback
+- Archivo mf: MANIFEST
+
+## ✨ Autores
+- 👤 Erlantz García
