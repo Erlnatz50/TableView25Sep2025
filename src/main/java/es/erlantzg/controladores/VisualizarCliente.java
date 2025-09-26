@@ -80,7 +80,12 @@ public class VisualizarCliente {
         colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
         colCumple.setCellValueFactory(new PropertyValueFactory<>("cumpleanos"));
 
-        tablaPersonas.getItems().clear();
+        Persona p1 = new Persona(1, "Erlantz", "García", LocalDate.of(1990, 5, 15));
+        Persona p2 = new Persona(2, "Ana", "Pérez", LocalDate.of(1985, 3, 20));
+        Persona p3 = new Persona(3, "Luis", "Martínez", LocalDate.of(2000, 12, 1));
+        tablaPersonas.getItems().addAll(p1, p2, p3);
+
+        //tablaPersonas.getItems().clear();
     }
 
     /**
