@@ -50,7 +50,7 @@ public class VisualizarCliente {
     private DatePicker seleCumpleanios;
 
     /**
-     * Tabla que muesra la lista de personas
+     * Tabla que muestra la lista de personas
      */
     @FXML
     private TableView<Persona> tablaPersonas;
@@ -68,31 +68,49 @@ public class VisualizarCliente {
     private TextField txtNombre;
 
     /**
+     * Contador interno para asignar IDs únicos a las nuevas personas
+     */
+    private int contadorId = 4;
+
+    /**
      * Inicializa el controlador.
-     * Configura las columnas de la tabla para que muestren correctamente las propiedades de {@link Persona}.
-     * Limpia la tabla al inicio.
+     * - Configura las columnas de la tabla para que muestren correctamente las propiedades de {@link Persona}.
+     * - Carga personas de ejemplo en la tabla.
      */
     @FXML
     public void initialize(){
-        // Vincular las columnas de la tabla con propiedades de Persona
+        vincularColumnas();
+
+        aniadirPersonasTabla();
+    }
+
+    /**
+     * Vincula las columnas de la tabla con las propiedades de {@link Persona}.
+     */
+    private void vincularColumnas() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
         colCumple.setCellValueFactory(new PropertyValueFactory<>("cumpleanos"));
-
-        Persona p1 = new Persona(1, "Erlantz", "García", LocalDate.of(1990, 5, 15));
-        Persona p2 = new Persona(2, "Ana", "Pérez", LocalDate.of(1985, 3, 20));
-        Persona p3 = new Persona(3, "Luis", "Martínez", LocalDate.of(2000, 12, 1));
-        tablaPersonas.getItems().addAll(p1, p2, p3);
-
-        //tablaPersonas.getItems().clear();
     }
 
     /**
-     * Metodo que se ejecuta al pulsat el botón "Añadir".
-     * Valida que los campos de nombre, apellidos y cumpleaños estén rellenados.
-     * Crea un objeto {@link Persona} y lo añade a la tabla.
-     * Limpia los campos del formulario tras añadirlos.
+     * Añade personas de ejemplo a la tabla.
+     * Se ejecuta al iniciar la aplicación y al restaurar las filas.
+     */
+    private void aniadirPersonasTabla() {
+        Persona p1 = new Persona(1, "Miguel", "De La Fuente", LocalDate.of(2000, 4, 14));
+        Persona p2 = new Persona(2, "Ana", "Pérez", LocalDate.of(1999, 3, 25));
+        Persona p3 = new Persona(3, "Angela", "Lopez", LocalDate.of(2003, 9, 1));
+        tablaPersonas.getItems().addAll(p1, p2, p3);
+    }
+
+    /**
+     * Metodo que se ejecuta al pulsar el botón "Añadir".
+     * - Válida que los campos de nombre, apellidos y cumpleaños estén rellenados.
+     * - Crea un objeto {@link Persona} y lo añade a la tabla.
+     * - Asigna automáticamente un ID único a la persona añadida.
+     * - Limpia los campos del formulario tras añadirlos.
      */
     @FXML
     void btnAniadir() {
@@ -100,7 +118,7 @@ public class VisualizarCliente {
         String apellidos = txtApellidos.getText().trim();
         LocalDate cumple = seleCumpleanios.getValue();
 
-        // Comprobar que todos los campos estan reyenados o mostrara una alerta
+        // Comprobar que todos los campos estén rellenados o mostrara una alerta
         if(nombre.isEmpty() || apellidos.isEmpty() || cumple == null){
             Alert alerta = new Alert(Alert.AlertType.WARNING);
             alerta.setTitle("Campos incompletos");
@@ -111,7 +129,7 @@ public class VisualizarCliente {
         }
 
         // Crear un objeto Persona y añadirlo a la tabla
-        Persona p = new Persona(0, nombre, apellidos, cumple);
+        Persona p = new Persona(contadorId++, nombre, apellidos, cumple);
         tablaPersonas.getItems().add(p);
 
         // Vaciar los campos
@@ -130,7 +148,7 @@ public class VisualizarCliente {
         // Obtener la persona seleccionada
         Persona pSelec = tablaPersonas.getSelectionModel().getSelectedItem();
 
-        // Borrar a la persona si hay alguna seleccion sino saltar una alerta
+        // Borrar a la persona si hay alguna selección si no saltar una alerta
         if (pSelec != null) {
             tablaPersonas.getItems().remove(pSelec);
         } else {
@@ -144,21 +162,15 @@ public class VisualizarCliente {
 
     /**
      * Metodo que se ejecuta al pulsar el botón "Restaurar filas".
-     * Permite recargar los datos de la tabla desde la BD.
-     *
+     * - Limpia todas las finas de la tabla.
+     * - Vuelve a cargar las personas de ejemplo.
      */
     @FXML
     void btnRestaurarFilas() {
         try {
-            // Vaciar toda la tabla
             tablaPersonas.getItems().clear();
 
-            // Obtener todas las personas desde la BD
-            //PersonaDAO dao = new PersonaDAO();
-            //List<Persona> personas = dao.obtenerTodasPersonas();
-
-            // Añadir cada persona a la tabla
-            //tablaPersonas.getItems().addAll(personas);
+            aniadirPersonasTabla();
 
         } catch (Exception e) {
             Alert alerta = new Alert(Alert.AlertType.ERROR);

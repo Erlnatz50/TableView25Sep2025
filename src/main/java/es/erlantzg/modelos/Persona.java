@@ -14,19 +14,19 @@ public class Persona {
     /**
      * Identificador único de la persona
      */
-    private int id;
+    private final int id;
     /**
      * Nombre de la persona
      */
-    private String nombre;
+    private final String nombre;
     /**
      * Apellidos de la persona
      */
-    private String apellidos;
+    private final String apellidos;
     /**
      * Fecha de cumpleaños de la persona
      */
-    private LocalDate cumpleanos;
+    private final LocalDate cumpleanos;
 
     /**
      * Constructor principal de la clase Persona
@@ -60,14 +60,6 @@ public class Persona {
         return id;
     }
 
-    /**
-     * Establece el identificador de la persona.
-     *
-     * @param id Nuevo identificador
-     */
-    public void setId(int id){
-        this.id = id;
-    }
 
     /**
      * Obtiene el nombre de la persona.
@@ -76,15 +68,6 @@ public class Persona {
      */
     public String getNombre(){
         return nombre;
-    }
-
-    /**
-     * Establece el nombre de la persona.
-     *
-     * @param nombre Nuevo nombre
-     */
-    public void setNombre(String nombre){
-        this.nombre = nombre;
     }
 
     /**
@@ -97,15 +80,6 @@ public class Persona {
     }
 
     /**
-     * Establece los apellidos de la persona.
-     *
-     * @param apellidos Nuevos apellidos
-     */
-    public void setApellidos(String apellidos){
-        this.apellidos = apellidos;
-    }
-
-    /**
      * Obtiene la fecha de cumpleaños de la persona.
      *
      * @return cumpleaños de la persona
@@ -114,22 +88,5 @@ public class Persona {
         return cumpleanos;
     }
 
-    /**
-     * Establece la fecha de cumpleaños de la persona.
-     *
-     * @param cumpleanos Nueva fecha de cumpleaños
-     */
-    public void setCumpleanos(LocalDate cumpleanos){
-        this.cumpleanos = cumpleanos;
-    }
 
-    /**
-     * Devulve todos los valores de una persona en cadena.
-     *
-     * @return cadena con id, nombre, apellidos y cumpleaños
-     */
-    @Override
-    public String toString(){
-        return "Id: " + id + ", nombre: " + nombre + ", apellidos: " + apellidos + ", cumpleaños: " + cumpleanos;
-    }
 }

@@ -52,9 +52,13 @@ public class App extends Application {
             }
 
             logger.info("Cargar la aplicación");
-            stage.setTitle("Creating Forms Using a GridPane");
+            stage.setTitle("Adding/Deleting Rows in a TableViews");
             stage.setScene(scene);
-            stage.setResizable(false);
+            stage.setResizable(true);
+            stage.setMinWidth(400);
+            stage.setMinHeight(350);
+            stage.setMaxWidth(500);
+            stage.setMaxHeight(500);
             stage.show();
 
         } catch (Exception e) {

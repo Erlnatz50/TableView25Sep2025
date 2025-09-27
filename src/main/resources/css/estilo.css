@@ -1,19 +1,17 @@
-/* NO HAY NINGUN ESTILO INTRODUCIDO */
-.tabla{
-    -fx-padding: 10 10 10 10;
-    -fx-border-style: solid inside;
-    -fx-border-width: 2;
-    -fx-border-insets: 5;
-    -fx-border-radius: 5;
+/* Estilo del borde azul exterior */
+.borde{
     -fx-border-color: blue;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5;
+    -fx-padding: 5;
 }
 
-/*  */
+/* Estilo para los botones */
 .botones{
-    -fx-font-size: 16px;
+    -fx-font-size: 13px;
 }
 
-/*  */
-.label-status{
-    -fx-font-size: 14px;
+/* Estio para los Labels */
+.labels{
+    -fx-font-size: 13px;
 }

@@ -1,12 +1,12 @@
 ## 📖 Fecha de creación
 Ejercicio creado el 25 de Septiembre de 2025
 
-## 📂 Archivos más improtantes del proyecto
+## 📂 Archivos más importantes del proyecto
 - Archivos java: App, Lanzador, Persona y VisualizarCliente
 - Archivo css: estilo
 - Archivo fxml: visualizarCliente
 - Archivo xml: logback
 - Archivo mf: MANIFEST
 
-## ✨ Autores
+## ✨ Autor
 - 👤 Erlantz García
