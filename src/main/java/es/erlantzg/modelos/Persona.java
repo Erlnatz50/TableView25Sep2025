@@ -1,6 +1,7 @@
 package es.erlantzg.modelos;
 
 import java.time.LocalDate;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Representa una persona con un identificador, nombre, apellido y fecha de cumpleaños.
@@ -29,15 +30,19 @@ public class Persona {
     private final LocalDate cumpleanos;
 
     /**
+     * Contador único para IDs.
+     */
+    private static final AtomicInteger contador = new AtomicInteger(0);
+
+    /**
      * Constructor principal de la clase Persona
      *
-     * @param id Identificador de la persona
      * @param nombre Nombre de la persona
      * @param apellidos Apellidos de la persona
      * @param cumpleanos Fecha de cumpleaños de la persona
      */
-    public Persona(int id, String nombre, String apellidos, LocalDate cumpleanos) {
-        this.id = id;
+    public Persona(String nombre, String apellidos, LocalDate cumpleanos) {
+        this.id = contador.incrementAndGet();
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.cumpleanos = cumpleanos;
@@ -45,10 +50,10 @@ public class Persona {
 
     /**
      * Constructor por defecto de la clase Persona.
-     * Inicializa los campos con valores por defecto (0 o null).
+     * Inicializa los campos con valores por defecto (ID automatico, cadenas vacías y null).
      */
     public Persona() {
-        this(0, "", "", null);
+        this("", "", null);
     }
 
     /**
@@ -59,7 +64,6 @@ public class Persona {
     public int getId(){
         return id;
     }
-
 
     /**
      * Obtiene el nombre de la persona.
@@ -88,5 +92,13 @@ public class Persona {
         return cumpleanos;
     }
 
+    @Override
+    public String toString() {
+        return "id= " + id + ", nombre= " + nombre + ", apellidos= " + apellidos + ", cumpleaños= " + cumpleanos;
+    }
+
+    public static void resetearContador(int valorInicial) {
+        contador.set(valorInicial);
+    }
 
 }

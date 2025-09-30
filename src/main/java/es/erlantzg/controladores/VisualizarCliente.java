@@ -1,13 +1,16 @@
 package es.erlantzg.controladores;
 
+import es.erlantzg.App;
 import es.erlantzg.modelos.Persona;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.time.LocalDate;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Controlador de la vista "visualizarCliente.fxml".
@@ -67,11 +70,8 @@ public class VisualizarCliente {
     @FXML
     private TextField txtNombre;
 
-    /**
-     * Contador interno para asignar IDs únicos a las nuevas personas
-     */
-    private int contadorId = 4;
-    // AtomicInteger
+    /** Logger para esta clase */
+    private static final Logger logger = LoggerFactory.getLogger(VisualizarCliente.class);
 
     /**
      * Inicializa el controlador.
@@ -80,30 +80,9 @@ public class VisualizarCliente {
      */
     @FXML
     public void initialize(){
+        logger.info("Inicializando controlador VisualizarCliente");
         vincularColumnas();
-
         aniadirPersonasTabla();
-    }
-
-    /**
-     * Vincula las columnas de la tabla con las propiedades de {@link Persona}.
-     */
-    private void vincularColumnas() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
-        colCumple.setCellValueFactory(new PropertyValueFactory<>("cumpleanos"));
-    }
-
-    /**
-     * Añade personas de ejemplo a la tabla.
-     * Se ejecuta al iniciar la aplicación y al restaurar las filas.
-     */
-    private void aniadirPersonasTabla() {
-        Persona p1 = new Persona(1, "Miguel", "De La Fuente", LocalDate.of(2000, 4, 14));
-        Persona p2 = new Persona(2, "Ana", "Pérez", LocalDate.of(1999, 3, 25));
-        Persona p3 = new Persona(3, "Angela", "Lopez", LocalDate.of(2003, 9, 1));
-        tablaPersonas.getItems().addAll(p1, p2, p3);
     }
 
     /**
@@ -119,24 +98,17 @@ public class VisualizarCliente {
         String apellidos = txtApellidos.getText().trim();
         LocalDate cumple = seleCumpleanios.getValue();
 
-        // Comprobar que todos los campos estén rellenados o mostrara una alerta
         if(nombre.isEmpty() || apellidos.isEmpty() || cumple == null){
-            Alert alerta = new Alert(Alert.AlertType.WARNING);
-            alerta.setTitle("Campos incompletos");
-            alerta.setHeaderText("Falta información");
-            alerta.setContentText("Debes rellenar el nombre, los apellidos y el cumpleaños.");
-            alerta.showAndWait();
+            logger.warn("Intento añadir una persona con campos incompletos.");
+            mandarAlertas(Alert.AlertType.WARNING, "Campos incompletos", "Falta información", "Debes rellenar el nombre, los apellidos y el cumpleaños.");
             return;
         }
 
-        // Crear un objeto Persona y añadirlo a la tabla
-        Persona p = new Persona(contadorId++, nombre, apellidos, cumple);
+        Persona p = new Persona(nombre, apellidos, cumple);
         tablaPersonas.getItems().add(p);
+        logger.info("Persona añadida: id={}, nombre={}, apellidos={}, cumpleaños={}", p.getId(), p.getNombre(), p.getApellidos(), p.getCumpleanos());
 
-        // Vaciar los campos
-        txtNombre.clear();
-        txtApellidos.clear();
-        seleCumpleanios.setValue(null);
+        limpiarCampos();
     }
 
     /**
@@ -146,18 +118,14 @@ public class VisualizarCliente {
      */
     @FXML
     void btnEliminarFilaSelec() {
-        // Obtener la persona seleccionada
         Persona pSelec = tablaPersonas.getSelectionModel().getSelectedItem();
 
-        // Borrar a la persona si hay alguna selección si no saltar una alerta
         if (pSelec != null) {
             tablaPersonas.getItems().remove(pSelec);
+            logger.info("Persona eliminada: id={}, nombre={}, apellidos={}, cumpleaños={}", pSelec.getId(), pSelec.getNombre(), pSelec.getApellidos(), pSelec.getCumpleanos());
         } else {
-            Alert alerta = new Alert(Alert.AlertType.WARNING);
-            alerta.setTitle("Seleccionar fila");
-            alerta.setHeaderText("No hay ninguna fila seleccionada");
-            alerta.setContentText("Debes seleccionar una fila para poder eliminarla.");
-            alerta.showAndWait();
+            logger.warn("Intento eliminar una fila sin selección");
+            mandarAlertas(Alert.AlertType.WARNING, "Seleccionar fila", "No hay ninguna fila seleccionada", "Debes seleccionar una fila para poder eliminarla.");
         }
     }
 
@@ -170,15 +138,60 @@ public class VisualizarCliente {
     void btnRestaurarFilas() {
         try {
             tablaPersonas.getItems().clear();
-
+            Persona.resetearContador(0);
             aniadirPersonasTabla();
-
+            logger.info("Tabla restaurada con personas de ejemplo");
         } catch (Exception e) {
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setTitle("Error al cargar los datos");
-            alerta.setHeaderText("No se ha podido cargar las filas");
-            alerta.setContentText(e.getMessage());
-            alerta.showAndWait();
+            logger.error("Error al restaurar filas: {}", e.getMessage());
+            mandarAlertas(Alert.AlertType.ERROR,"Error al cargar los datos", "No se ha podido cargas las filas", e.getMessage());
         }
+    }
+
+    /**
+     * Vincula las columnas de la tabla con las propiedades de {@link Persona}.
+     */
+    private void vincularColumnas() {
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
+        colCumple.setCellValueFactory(new PropertyValueFactory<>("cumpleanos"));
+        logger.debug("Columnas vinculadas con propiedades de Persona");
+    }
+
+    /**
+     * Añade personas de ejemplo a la tabla.
+     */
+    private void aniadirPersonasTabla() {
+        Persona p1 = new Persona("Miguel", "De La Fuente", LocalDate.of(2000, 4, 14));
+        Persona p2 = new Persona("Ana", "Pérez", LocalDate.of(1999, 3, 25));
+        Persona p3 = new Persona("Angela", "Lopez", LocalDate.of(2003, 9, 1));
+        tablaPersonas.getItems().addAll(p1, p2, p3);
+        logger.debug("Personas de ejemplo añadidas a la tabla");
+    }
+
+    /**
+     * Limpia los campos del formulario
+     */
+    private void limpiarCampos() {
+        txtNombre.clear();
+        txtApellidos.clear();
+        seleCumpleanios.setValue(null);
+    }
+
+    /**
+     * Muestra una alerta JavaFX con los datos proporcionados.
+     *
+     * @param tipo Tipo de alerta (INFO, WARNING, ERROR...)
+     * @param titulo Título de la ventana de alerta
+     * @param mensajeTitulo Texto del encabezado de la alerta
+     * @param mensaje Texto del contenido de la alerta
+     */
+    private void mandarAlertas(Alert.AlertType tipo, String titulo, String mensajeTitulo, String mensaje) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(mensajeTitulo);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
+        logger.debug("Alerta mostrada: tipo={}, titulo={}", tipo, titulo);
     }
 }

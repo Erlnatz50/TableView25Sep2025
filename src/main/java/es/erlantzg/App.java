@@ -27,7 +27,7 @@ public class App extends Application {
 
     /**
      * Metodo principal que se ejecuta al iniciar la aplicación JavaFX.
-     * Carga el FXML, aplica el CSS, configura el stage y muetra la ventana.
+     * Carga el FXML, aplica el CSS, configura el stage y muestra la ventana.
      * Si ocurre algún error, muestra una alerta y registra el error en el Log.
      *
      * @param stage Stage principal proporcionado por JavaFX.
@@ -36,22 +36,24 @@ public class App extends Application {
     public void start(Stage stage) {
         try{
             logger.debug("Intentando cargar el FXML: /fxml/visualizarCliente.fxml");
-            FXMLLoader loaded = new FXMLLoader(getClass().getResource("/es/erlantzg/fxml/visualizarCliente.fxml"));
+            FXMLLoader loaded = new FXMLLoader(getClass().getResource("/fxml/visualizarCliente.fxml"));
             Scene scene = new Scene(loaded.load());
             logger.info("FXML cargado correctamente");
 
             // Comprobar que el archivo de CSS existe y si no mostrar una alerta
-            logger.debug("Buscando el archivo CSS");
-            var archivoCSS = getClass().getResource("/es/erlantzg/css/estilo.css");
+            var archivoCSS = getClass().getResource("/css/estilo.css");
             if(archivoCSS != null){
                 logger.info("CSS cargado correctamente");
                 scene.getStylesheets().add(archivoCSS.toExternalForm());
             } else{
                 logger.error("No se ha podido cargar el CSS");
-                new Alert(Alert.AlertType.INFORMATION, "No se ha podido cargar el CSS").showAndWait();
+                Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+                alerta.setTitle("CSS no encontrado");
+                alerta.setHeaderText(null);
+                alerta.setContentText("No se ha podido cargar la hoja de estilos CSS");
+                alerta.showAndWait();
             }
 
-            logger.info("Cargar la aplicación");
             stage.setTitle("Adding/Deleting Rows in a TableViews");
             stage.setScene(scene);
             stage.setResizable(true);
@@ -62,8 +64,12 @@ public class App extends Application {
             stage.show();
 
         } catch (Exception e) {
-            logger.error("Error al intentar cargar la aplicación", e);
-            new Alert(Alert.AlertType.ERROR, "Error al intentar cargar la aplicación").showAndWait();
+            logger.error("Error al intentar cargar la aplicación", e.getMessage());
+            Alert alerta = new Alert(Alert.AlertType.ERROR);
+            alerta.setTitle("Error");
+            alerta.setHeaderText("Error al iniciar la aplicación");
+            alerta.setContentText("Se ha producido un error al intentar cargar la aplicación");
+            alerta.showAndWait();
         }
     }
 

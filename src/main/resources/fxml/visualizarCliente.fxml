@@ -6,6 +6,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -29,17 +30,35 @@
         </rowConstraints>
 
         <Label styleClass="labels" text="Nombre:" />
-        <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+        <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+         <tooltip>
+            <Tooltip text="Introduce tu nombre" />
+         </tooltip></TextField>
 
         <Label styleClass="labels" text="Apellidos:" GridPane.rowIndex="1" />
-        <TextField fx:id="txtApellidos" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+        <TextField fx:id="txtApellidos" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+         <tooltip>
+            <Tooltip text="Introduce tus apellidos" />
+         </tooltip></TextField>
 
         <Label styleClass="labels" text="Cumpleaños:" GridPane.rowIndex="2" />
-        <DatePicker fx:id="seleCumpleanios" prefHeight="25.0" prefWidth="195.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+        <DatePicker fx:id="seleCumpleanios" prefHeight="25.0" prefWidth="195.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
+         <tooltip>
+            <Tooltip text="Introduce tu fecha de nacimiento" />
+         </tooltip></DatePicker>
 
-        <Button mnemonicParsing="false" onAction="#btnRestaurarFilas" styleClass="botones" text="Restaurar filas" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-        <Button mnemonicParsing="false" onAction="#btnEliminarFilaSelec" styleClass="botones" text="Eliminar la fila seleccionada" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-        <Button mnemonicParsing="false" onAction="#btnAniadir" styleClass="botones" text="Añadir" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+        <Button mnemonicParsing="false" onAction="#btnRestaurarFilas" styleClass="botones" text="Restaurar filas" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+         <tooltip>
+            <Tooltip text="Restaurar las filas del inicio" />
+         </tooltip></Button>
+        <Button mnemonicParsing="false" onAction="#btnEliminarFilaSelec" styleClass="botones" text="Eliminar la fila seleccionada" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         <tooltip>
+            <Tooltip text="Eliminar la fila seleccionada de la tabla" />
+         </tooltip></Button>
+        <Button mnemonicParsing="false" onAction="#btnAniadir" styleClass="botones" text="Añadir" GridPane.columnIndex="2" GridPane.halignment="CENTER">
+         <tooltip>
+            <Tooltip text="Añadir un nuevo cliente" />
+         </tooltip></Button>
 
       </GridPane>
 

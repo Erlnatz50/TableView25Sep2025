@@ -13,7 +13,7 @@ public class Lanzador {
     /**
      * Metodo principal de la clase lanzadora.
      * Recibe los argumentos de línea de comandos y los pasa al
-     * {@link es.erlantzg.App#main(String[])} para iniciar la aplicacion.
+     * {@link es.erlantzg.App#main(String[])} para iniciar la aplicación.
      *
      * @param args Argumentos de línea de comandos.
      */
