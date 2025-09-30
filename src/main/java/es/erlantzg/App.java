@@ -36,13 +36,13 @@ public class App extends Application {
     public void start(Stage stage) {
         try{
             logger.debug("Intentando cargar el FXML: /fxml/visualizarCliente.fxml");
-            FXMLLoader loaded = new FXMLLoader(getClass().getResource("/fxml/visualizarCliente.fxml"));
+            FXMLLoader loaded = new FXMLLoader(getClass().getResource("/es/erlantzg/fxml/visualizarCliente.fxml"));
             Scene scene = new Scene(loaded.load());
             logger.info("FXML cargado correctamente");
 
             // Comprobar que el archivo de CSS existe y si no mostrar una alerta
             logger.debug("Buscando el archivo CSS");
-            var archivoCSS = getClass().getResource("/css/estilo.css");
+            var archivoCSS = getClass().getResource("/es/erlantzg/css/estilo.css");
             if(archivoCSS != null){
                 logger.info("CSS cargado correctamente");
                 scene.getStylesheets().add(archivoCSS.toExternalForm());

@@ -71,6 +71,7 @@ public class VisualizarCliente {
      * Contador interno para asignar IDs únicos a las nuevas personas
      */
     private int contadorId = 4;
+    // AtomicInteger
 
     /**
      * Inicializa el controlador.
