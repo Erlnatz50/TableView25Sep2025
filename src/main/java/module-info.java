@@ -4,6 +4,7 @@ module es.erlantzg {
     requires org.slf4j;
     requires jdk.compiler;
     requires java.desktop;
+    requires java.sql;
 
     opens es.erlantzg.controladores to javafx.fxml;
     opens es.erlantzg.modelos to javafx.base;
