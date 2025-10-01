@@ -1,6 +1,7 @@
 package es.erlantzg.controladores;
 
 import es.erlantzg.App;
+import es.erlantzg.dao.PersonaDAO;
 import es.erlantzg.modelos.Persona;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -73,6 +75,8 @@ public class VisualizarCliente {
     /** Logger para esta clase */
     private static final Logger logger = LoggerFactory.getLogger(VisualizarCliente.class);
 
+    private PersonaDAO pDAO;
+
     /**
      * Inicializa el controlador.
      * - Configura las columnas de la tabla para que muestren correctamente las propiedades de {@link Persona}.
@@ -80,6 +84,7 @@ public class VisualizarCliente {
      */
     @FXML
     public void initialize(){
+        pDAO = new PersonaDAO();
         logger.info("Inicializando controlador VisualizarCliente");
         vincularColumnas();
         aniadirPersonasTabla();
@@ -162,10 +167,10 @@ public class VisualizarCliente {
      * Añade personas de ejemplo a la tabla.
      */
     private void aniadirPersonasTabla() {
-        Persona p1 = new Persona("Miguel", "De La Fuente", LocalDate.of(2000, 4, 14));
-        Persona p2 = new Persona("Ana", "Pérez", LocalDate.of(1999, 3, 25));
-        Persona p3 = new Persona("Angela", "Lopez", LocalDate.of(2003, 9, 1));
-        tablaPersonas.getItems().addAll(p1, p2, p3);
+        List<Persona> personas = pDAO.obtenerTodasPersonas();
+        for (Persona p : personas) {
+            tablaPersonas.getItems().add(p);
+        }
         logger.debug("Personas de ejemplo añadidas a la tabla");
     }
 
