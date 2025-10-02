@@ -2,6 +2,7 @@ package es.erlantzg.controladores;
 
 import es.erlantzg.dao.PersonaDAO;
 import es.erlantzg.modelos.Persona;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
@@ -70,7 +71,7 @@ public class VisualizarCliente {
         pDAO = new PersonaDAO();
         logger.info("Inicializando controlador VisualizarCliente");
         vincularColumnas();
-        aniadirPersonasTabla();
+        cargarPersonasAsync();
     }
 
     /**
@@ -93,19 +94,27 @@ public class VisualizarCliente {
 
         Persona p = new Persona(nombre, apellidos, cumple);
 
-        try {
-            pDAO.insertarPersona(p);
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                pDAO.insertarPersona(p);
+                return null;
+            }
+        };
 
+        task.setOnSucceeded(e -> {
             tablaPersonas.getItems().add(p);
-
-            logger.info("Persona añadida: id={}, nombre={}, apellidos={}, cumpleaños={}", p.getId(), p.getNombre(), p.getApellidos(), p.getCumpleanos());
-
             limpiarCampos();
+            logger.info("Personas añadida asincrónicamente: {}", p);
+        });
 
-        } catch (RuntimeException e) {
-            logger.error("Error al insertar persona: {}", e.getMessage());
-            mandarAlertas(Alert.AlertType.ERROR, "Error al isertar", "No se ha podido insertar la persona", "Comprueba la conexión con la base de datos y vuelve a intentarlo");
-        }
+        task.setOnFailed(e -> {
+            Throwable ex = task.getException();
+            logger.error("Error insertando persona", ex);
+            mandarAlertas(Alert.AlertType.ERROR, "Error", "No se ha podido insertar la persona", ex.getMessage());
+        });
+
+        new Thread(task).start();
     }
 
     /**
@@ -118,28 +127,35 @@ public class VisualizarCliente {
     void btnEliminarFilaSelec() {
         Persona pSelec = tablaPersonas.getSelectionModel().getSelectedItem();
 
-        if (pSelec != null) {
-            boolean confirmado = mandarConfirmacion("Confirmar eliminación", "Estas seguro que deseas eliminar la persona seleccionada?", "Nombre: " + pSelec.getNombre() + " " + pSelec.getApellidos());
-
-            if (confirmado) {
-                try {
-                    pDAO.eliminarPersona(pSelec.getId());
-
-                    tablaPersonas.getItems().remove(pSelec);
-
-                    logger.info("Persona eliminada: id={}, nombre={}, apellidos={}, cumpleaños={}", pSelec.getId(), pSelec.getNombre(), pSelec.getApellidos(), pSelec.getCumpleanos());
-
-                } catch (RuntimeException e) {
-                    logger.error("Error al eliminar la persona id = {}: {}", pSelec.getId(), e.getMessage());
-                    mandarAlertas(Alert.AlertType.ERROR, "Error al eliminar", "No se pudo eliminar la persona seleccionada", "Comprueba la conexión con la base de datos y vuelve a intentarlo");
-                }
-            } else {
-                logger.info("Eliminación cancelada por el usuario");
-            }
-        } else {
-            logger.warn("Intento eliminar una fila sin selección");
-            mandarAlertas(Alert.AlertType.WARNING, "Seleccionar fila", "No hay ninguna fila seleccionada", "Debes seleccionar una fila para poder eliminarla.");
+        if (pSelec == null){
+            mandarAlertas(Alert.AlertType.WARNING, "Seleccionar fila", null, "Debes seleccionar una fila para eliminar");
+            return;
         }
+
+        if (!mandarConfirmacion("Confirmar eliminación", "Eliminar persona?", " " + pSelec.getNombre() + " " + pSelec.getApellidos())) {
+            return;
+        }
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                pDAO.eliminarPersona(pSelec.getId());
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            tablaPersonas.getItems().remove(pSelec);
+            logger.info("Personas eliminada asincrónicamente: {}", pSelec);
+        });
+
+        task.setOnFailed(e -> {
+            Throwable ex = task.getException();
+            logger.error("Error eliminando persona", ex);
+            mandarAlertas(Alert.AlertType.ERROR, "Error", "No se ha podido eliminar la persona", ex.getMessage());
+        });
+
+        new Thread(task).start();
     }
 
     /**
@@ -151,7 +167,7 @@ public class VisualizarCliente {
     void btnRestaurarFilas() {
         try {
             tablaPersonas.getItems().clear();
-            aniadirPersonasTabla();
+            cargarPersonasAsync();
             logger.info("Tabla restaurada con personas");
         } catch (Exception e) {
             logger.error("Error al restaurar filas: {}", e.getMessage());
@@ -173,12 +189,27 @@ public class VisualizarCliente {
     /**
      * Carga las personas desde la base de datos y las añade a la tabla.
      */
-    private void aniadirPersonasTabla() {
-        List<Persona> personas = pDAO.obtenerTodasPersonas();
-        for (Persona p : personas) {
-            tablaPersonas.getItems().add(p);
-        }
-        logger.debug("Personas de ejemplo añadidas a la tabla");
+    private void cargarPersonasAsync() {
+        Task<List<Persona>> task = new Task<>() {
+            @Override
+            protected List<Persona> call() {
+                return pDAO.obtenerTodasPersonas();
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            List<Persona> personas = task.getValue();
+            tablaPersonas.getItems().setAll(personas);
+            logger.info("Personas cargadas asincrónicamente: {}", personas.size());
+        });
+
+        task.setOnFailed(e -> {
+            Throwable ex = task.getException();
+            logger.error("Error al cargar las personas", ex);
+            mandarAlertas(Alert.AlertType.ERROR, "Error", "Fallo al cargar los datos", ex.getMessage());
+        });
+
+        new Thread(task).start();
     }
 
     /**
