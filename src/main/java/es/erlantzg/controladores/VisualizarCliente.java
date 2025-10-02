@@ -1,6 +1,5 @@
 package es.erlantzg.controladores;
 
-import es.erlantzg.App;
 import es.erlantzg.modelos.Persona;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -10,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Controlador de la vista "visualizarCliente.fxml".
@@ -22,51 +20,35 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class VisualizarCliente {
 
-    /**
-     * Columna ID en la tabla de personas
-     */
+    /** Columna ID en la tabla de personas */
     @FXML
     private TableColumn<Persona, Integer> colId;
 
-    /**
-     * Columna Nombre en la tabla de personas
-     */
+    /** Columna Nombre en la tabla de personas */
     @FXML
     private TableColumn<Persona, String> colNombre;
 
-    /**
-     * Columna Apellidos en la tabla de personas
-     */
+    /** Columna Apellidos en la tabla de personas */
     @FXML
     private TableColumn<Persona, String> colApellidos;
 
-    /**
-     * Columna Cumpleaños en la tabla de personas
-     */
+    /** Columna Cumpleaños en la tabla de personas */
     @FXML
     private TableColumn<Persona, LocalDate> colCumple;
 
-    /**
-     * Selector de fecha para el cumpleaños
-     */
+    /** Selector de fecha para el cumpleaños */
     @FXML
     private DatePicker seleCumpleanios;
 
-    /**
-     * Tabla que muestra la lista de personas
-     */
+    /** Tabla que muestra la lista de personas */
     @FXML
     private TableView<Persona> tablaPersonas;
 
-    /**
-     * Campo de texto para los apellidos
-     */
+    /** Campo de texto para los apellidos */
     @FXML
     private TextField txtApellidos;
 
-    /**
-     * Campo de texto para el nombre
-     */
+    /** Campo de texto para el nombre */
     @FXML
     private TextField txtNombre;
 

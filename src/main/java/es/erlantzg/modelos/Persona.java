@@ -12,26 +12,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Persona {
 
-    /**
-     * Identificador único de la persona
-     */
+    /** Identificador único de la persona */
     private final int id;
-    /**
-     * Nombre de la persona
-     */
+
+    /** Nombre de la persona */
     private final String nombre;
-    /**
-     * Apellidos de la persona
-     */
+
+    /** Apellidos de la persona */
     private final String apellidos;
-    /**
-     * Fecha de cumpleaños de la persona
-     */
+
+    /** Fecha de cumpleaños de la persona */
     private final LocalDate cumpleanos;
 
-    /**
-     * Contador único para IDs.
-     */
+    /** Contador único para IDs. */
     private static final AtomicInteger contador = new AtomicInteger(0);
 
     /**
