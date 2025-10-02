@@ -18,6 +18,7 @@ import java.util.Optional;
  * Controlador de la vista "visualizarCliente.fxml".
  * Gestiona la interacción entre la interfaz gráfica (FXML) y los datos de tipo {@link Persona}
  * Permite añadir, eliminar y restaurar filas en una tabla de personas.
+ * Se realizan de forma asincrona en hilos en segundo plano para evitar bloquear la interfaz de usuario.
  *
  * @author Erlantz García
  * @version 1.0
@@ -77,7 +78,7 @@ public class VisualizarCliente {
     /**
      * Metodo que se ejecuta al pulsar el botón "Añadir".
      * Válida que todos los campos estén completos.
-     * Crea un objeto {@link Persona}, lo añade a la tabla y a la base de datos.
+     * Inserta una nueva persona en la base de datos mediante una tarea asincrona
      * Limpia los campos del formulario tras añadirlos.
      */
     @FXML
@@ -120,7 +121,8 @@ public class VisualizarCliente {
     /**
      * Metodo que se ejecuta al pulsar el botón "Eliminar fila seleccionada".
      * Solicita confirmación antes de eliminar.
-     * Elimina la persona seleccionada de la base de datos y actualiza la tabla.
+     * Elimina la persona seleccionada de la base de datos y actualiza la tabla,
+     * mediante una tarea asincrona para evitar bloqueos en la interfaz.
      * Muestra alertas cuando ocurra algún error.
      */
     @FXML
@@ -187,7 +189,8 @@ public class VisualizarCliente {
     }
 
     /**
-     * Carga las personas desde la base de datos y las añade a la tabla.
+     * Carga todas las personas desde la base de datos utilizando una tarea en segundo plano.
+     * Una vez completada, actualiza la tabla con los resultados en el hilo de la interfaz.
      */
     private void cargarPersonasAsync() {
         Task<List<Persona>> task = new Task<>() {
