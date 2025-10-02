@@ -81,10 +81,13 @@ public class PersonaDAO {
                 Date fecha = rs.getDate("cumpleanos");
                 LocalDate cumpleanos = fecha != null ? fecha.toLocalDate() : null;
 
-                Persona p = new Persona(nombre, apellidos, cumpleanos);
+                Persona p = new Persona(id, nombre, apellidos, cumpleanos);
                 personas.add(p);
             }
             logger.info("{} registros encontrados", personas.size());
+
+            rs.close();
+            pst.close();
 
         } catch (SQLException e) {
             logger.error("Error al obtener las personas", e);
@@ -103,12 +106,28 @@ public class PersonaDAO {
     public void insertarPersona(Persona p) {
         String sqlInsert = "INSERT INTO personas (nombre, apellidos, cumpleanos) VALUES (?, ?, ?)";
         try {
-            PreparedStatement pst = conn.prepareStatement(sqlInsert);
+            PreparedStatement pst = conn.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
             pst.setString(1, p.getNombre());
             pst.setString(2, p.getApellidos());
             pst.setDate(3, Date.valueOf(p.getCumpleanos()));
             int filas = pst.executeUpdate();
+
+            // Obtener el ID único de la persona añadida
+            try {
+                ResultSet generarID = pst.getGeneratedKeys();
+                if (generarID.next()) {
+                    int idGenerado = generarID.getInt(1);
+                    p.setId(idGenerado);
+                } else {
+                    throw new SQLException("No se ha podido obtener el id");
+                }
+            } catch (SQLException e) {
+                logger.error("Error al obtener el id generado para la persona: {}", p);
+                throw e;
+            }
+
             logger.info("Insert ejecutado, filas afectadas: {}", filas);
+            pst.close();
 
         } catch (SQLException e) {
             logger.error("Error al insertar la persona: {}", p, e);
@@ -129,6 +148,7 @@ public class PersonaDAO {
             pst.setInt(1, id);
             pst.executeUpdate();
             logger.info("Persona eliminada correctamente con el id {}", id);
+            pst.close();
 
         } catch (SQLException e) {
             logger.error("Error al eliminar a la persona con id: {}", id, e);
