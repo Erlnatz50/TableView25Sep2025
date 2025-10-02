@@ -1,0 +1,8 @@
+DROP TABLE personas;
+
+CREATE TABLE personas (
+  id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  nombre VARCHAR(50) NOT NULL,
+  apellidos VARCHAR(50) NOT NULL,
+  cumpleanos DATE NOT NULL
+);
