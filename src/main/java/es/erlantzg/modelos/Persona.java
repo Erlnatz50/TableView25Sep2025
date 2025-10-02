@@ -1,7 +1,6 @@
 package es.erlantzg.modelos;
 
 import java.time.LocalDate;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Representa una persona con un identificador, nombre, apellido y fecha de cumpleaños.
@@ -12,27 +11,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Persona {
 
-    /**
-     * Identificador único de la persona
-     */
-    private final int id;
-    /**
-     * Nombre de la persona
-     */
-    private final String nombre;
-    /**
-     * Apellidos de la persona
-     */
-    private final String apellidos;
-    /**
-     * Fecha de cumpleaños de la persona
-     */
-    private final LocalDate cumpleanos;
+    /** Identificador único de la persona */
+    private int id;
 
-    /**
-     * Contador único para IDs.
-     */
-    private static final AtomicInteger contador = new AtomicInteger(0);
+    /** Nombre de la persona */
+    private final String nombre;
+
+    /** Apellidos de la persona */
+    private final String apellidos;
+
+    /** Fecha de cumpleaños de la persona */
+    private final LocalDate cumpleanos;
 
     /**
      * Constructor principal de la clase Persona
@@ -41,8 +30,8 @@ public class Persona {
      * @param apellidos Apellidos de la persona
      * @param cumpleanos Fecha de cumpleaños de la persona
      */
-    public Persona(String nombre, String apellidos, LocalDate cumpleanos) {
-        this.id = contador.incrementAndGet();
+    public Persona(int id, String nombre, String apellidos, LocalDate cumpleanos) {
+        this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.cumpleanos = cumpleanos;
@@ -53,7 +42,11 @@ public class Persona {
      * Inicializa los campos con valores por defecto (ID automatico, cadenas vacías y null).
      */
     public Persona() {
-        this("", "", null);
+        this(0, "", "", null);
+    }
+
+    public Persona(String nombre, String apellidos, LocalDate cumpleanos) {
+        this(0, nombre, apellidos, cumpleanos);
     }
 
     /**
@@ -63,6 +56,15 @@ public class Persona {
      */
     public int getId(){
         return id;
+    }
+
+    /**
+     * Asigna un id único a la persona
+     *
+     * @param id de la persona
+     */
+    public void setId(int id) {
+        this.id = id;
     }
 
     /**
@@ -95,10 +97,6 @@ public class Persona {
     @Override
     public String toString() {
         return "id= " + id + ", nombre= " + nombre + ", apellidos= " + apellidos + ", cumpleaños= " + cumpleanos;
-    }
-
-    public static void resetearContador(int valorInicial) {
-        contador.set(valorInicial);
     }
 
 }

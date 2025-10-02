@@ -1,0 +1,1 @@
+DELETE FROM personas WHERE id = 9;
