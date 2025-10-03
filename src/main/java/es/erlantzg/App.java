@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * - Registrar mensajes de log con SLF4J.
  * Contiene también el metodo {@link #main(String[])} para lanzar la aplicación.
  *
- * @author Erlantz García
+ * @author Erlantz
  * @version 1.0
  */
 public class App extends Application {
@@ -64,7 +64,7 @@ public class App extends Application {
             stage.show();
 
         } catch (Exception e) {
-            logger.error("Error al intentar cargar la aplicación", e.getMessage());
+            logger.error("Error al intentar cargar la aplicación: {}", e.getMessage());
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Error");
             alerta.setHeaderText("Error al iniciar la aplicación");

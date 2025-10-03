@@ -17,7 +17,7 @@ import java.util.Properties;
  * Carga configuración de conexión desde el archivo properties externo.
  * Permite operaciones: obtener, insertar y eliminar personas.
  *
- * @author Erlantz García
+ * @author Erlantz
  * @version 1.0
  */
 public class PersonaDAO {

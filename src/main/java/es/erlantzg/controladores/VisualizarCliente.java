@@ -3,11 +3,17 @@ package es.erlantzg.controladores;
 import es.erlantzg.dao.PersonaDAO;
 import es.erlantzg.modelos.Persona;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javafx.application.Platform;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,12 +24,12 @@ import java.util.Optional;
  * Gestiona la interacción entre la interfaz gráfica (FXML) y los datos de tipo {@link Persona}
  * Permite añadir, eliminar y restaurar filas en una tabla de personas.
  *
- * @author Erlantz García
+ * @author Erlantz
  * @version 1.0
  */
 public class VisualizarCliente {
 
-    /** Columnas que muetra el ID de la persona en la tabla */
+    /** Columnas que muestra el ID de la persona en la tabla */
     @FXML
     private TableColumn<Persona, Integer> colId;
 
@@ -104,7 +110,7 @@ public class VisualizarCliente {
 
         } catch (RuntimeException e) {
             logger.error("Error al insertar persona: {}", e.getMessage());
-            mandarAlertas(Alert.AlertType.ERROR, "Error al isertar", "No se ha podido insertar la persona", "Comprueba la conexión con la base de datos y vuelve a intentarlo");
+            mandarAlertas(Alert.AlertType.ERROR, "Error al insertar", "No se ha podido insertar la persona", "Comprueba la conexión con la base de datos y vuelve a intentarlo");
         }
     }
 
@@ -157,6 +163,42 @@ public class VisualizarCliente {
             logger.error("Error al restaurar filas: {}", e.getMessage());
             mandarAlertas(Alert.AlertType.ERROR,"Error al cargar los datos", "No se ha podido cargas las filas", e.getMessage());
         }
+    }
+
+    /**
+     * Muestra una ventana modal con información sobre el autor.
+     * La ventana bloque la interacción con la ventana principal hasta que la cierre.
+     */
+    @FXML
+    void menuAcercaDe() {
+        Stage ventanaAcercaDe = new Stage();
+        ventanaAcercaDe.setTitle("Acerca de");
+
+        Label etiqueta = new Label("Me llamo Erlantz García");
+        etiqueta.setPadding(new Insets(10));
+
+        Scene escena = new Scene(new StackPane(etiqueta), 300, 150);
+        ventanaAcercaDe.setScene(escena);
+
+        ventanaAcercaDe.initModality(Modality.APPLICATION_MODAL);
+
+        ventanaAcercaDe.showAndWait();
+    }
+
+    /**
+     * Cierra la aplicación JavaFX terminando la ejecución de forma ordenada.
+     */
+    @FXML
+    void menuCerrar() {
+        Platform.exit();
+    }
+
+    /**
+     * Ejecuta la acción de eliminar la fila seleccionada en la tabla de personas.
+     */
+    @FXML
+    void menuEliminarFila() {
+        btnEliminarFilaSelec();
     }
 
     /**
