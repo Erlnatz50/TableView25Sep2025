@@ -174,7 +174,7 @@ public class VisualizarCliente {
         Stage ventanaAcercaDe = new Stage();
         ventanaAcercaDe.setTitle("Acerca de");
 
-        Label etiqueta = new Label("Me llamo Erlantz García");
+        Label etiqueta = new Label("Está aplicación la a creado Erlantz García.");
         etiqueta.setPadding(new Insets(10));
 
         Scene escena = new Scene(new StackPane(etiqueta), 300, 150);
@@ -190,7 +190,11 @@ public class VisualizarCliente {
      */
     @FXML
     void menuCerrar() {
-        Platform.exit();
+        boolean confirmar = mandarConfirmacion("Cerrar aplicación", "Estas seguro que deseas cerrar la aplicación?", "");
+
+        if (confirmar) {
+            Platform.exit();
+        }
     }
 
     /**

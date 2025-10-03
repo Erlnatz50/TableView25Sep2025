@@ -1,21 +1,18 @@
 package es.erlantzg.dao;
 
+import es.erlantzg.conexion.Conexion;
 import es.erlantzg.modelos.Persona;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Clase DAO para acceder y manipular datos de la entidad {@link Persona} en la base de datos.
- * Carga configuración de conexión desde el archivo properties externo.
- * Permite operaciones: obtener, insertar y eliminar personas.
+ * Usa la clase Conexion para obtener la conexión.
  *
  * @author Erlantz
  * @version 1.0
@@ -23,41 +20,16 @@ import java.util.Properties;
 public class PersonaDAO {
 
     /** Conexión JDBC con la base de datos */
-    private Connection conn;
+    private final Connection conn;
 
     /** Logger para esta clase */
     private static final Logger logger = LoggerFactory.getLogger(PersonaDAO.class);
 
     /**
-     * Constructor que carga la configuración desde el archivo `config.properties`
-     * y establece la conexión con la base de datos.
-     *
-     * @throws RuntimeException si config.properties no lo encuentra o si falla la conexión
+     * Constructor que obtiene la conexión desde la clase Conexion
      */
     public PersonaDAO() {
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("config.properties")) {
-            if (is == null) {
-                logger.error("No se ha podido encontrar config.properties");
-                throw new RuntimeException("No se ha podido encontrar config.properties");
-            }
-
-            Properties prop = new Properties();
-            prop.load(is);
-
-            String URL = prop.getProperty("url");
-            String USER = prop.getProperty("user");
-            String PASSWORD = prop.getProperty("password");
-
-            conn = DriverManager.getConnection(URL, USER, PASSWORD);
-            logger.info("Conexión a la BBDD establecida correctamente");
-
-        } catch (SQLException e) {
-            logger.error("Error al conectar a la base de datos", e);
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            logger.error("Error al cargar la configuración", e);
-            throw new RuntimeException(e);
-        }
+        this.conn = Conexion.crearConexion();
     }
 
     /**
