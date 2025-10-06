@@ -9,9 +9,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 
 /**
- * Clase encargada de gestionar la conexión a la base de datos.
+ * Clase encargada de gestionar la conexión a la base de datos de forma asíncrona.
  * Carga los parámetros desde el archivo config.properties.
  *
  * @author Erlantz
@@ -23,41 +24,45 @@ public class Conexion {
     private static final Logger logger = LoggerFactory.getLogger(Conexion.class);
 
     /** Conexión única */
-    private static Connection conn = null;
+    private static volatile Connection conn = null;
 
     /**
-     * Devuelve una conexión activa a la base de datos.
+     * Devuelve una conexión activa a la base de datos de forma asíncrona.
      *
-     * @return Connection activa
-     * @throws RuntimeException si ocurre un error al establecer la conexión
+     * @return CompletableFuture con la conexión activa
      */
-    public static Connection crearConexion() {
-        if (conn == null) {
-            try (InputStream is = Conexion.class.getClassLoader().getResourceAsStream("config.properties")) {
-                if (is == null) {
-                    logger.error("No se ha podido encontrar config.properties");
-                    throw new RuntimeException("No se ha podido encontrar config.properties");
+    public static CompletableFuture<Connection> crearConexion() {
+        return CompletableFuture.supplyAsync(() -> {
+            if (conn == null) {
+                synchronized (Conexion.class) {
+                    if (conn == null) {
+                        try (InputStream is = Conexion.class.getClassLoader().getResourceAsStream("config.properties")) {
+                            if (is == null) {
+                                logger.error("No se ha podido encontrar config.properties");
+                                throw new RuntimeException("No se ha podido encontrar config.properties");
+                            }
+
+                            Properties prop = new Properties();
+                            prop.load(is);
+
+                            String URL = prop.getProperty("url");
+                            String USER = prop.getProperty("user");
+                            String PASSWORD = prop.getProperty("password");
+
+                            conn = DriverManager.getConnection(URL, USER, PASSWORD);
+                            logger.info("Conexión a la BBDD establecida correctamente");
+
+                        } catch (SQLException e) {
+                            logger.error("Error al conectar a la base de datos", e);
+                            throw new RuntimeException(e);
+                        } catch (IOException e) {
+                            logger.error("Error al cargar la configuración", e);
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
-
-                Properties prop = new Properties();
-                prop.load(is);
-
-                String URL = prop.getProperty("url");
-                String USER = prop.getProperty("user");
-                String PASSWORD = prop.getProperty("password");
-
-                conn = DriverManager.getConnection(URL, USER, PASSWORD);
-                logger.info("Conexión a la BBDD establecida correctamente");
-
-            } catch (SQLException e) {
-                logger.error("Error al conectar a la base de datos", e);
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                logger.error("Error al cargar la configuración", e);
-                throw new RuntimeException(e);
             }
-        }
-
-        return conn;
+            return conn;
+        });
     }
 }

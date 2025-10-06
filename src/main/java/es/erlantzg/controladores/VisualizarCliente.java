@@ -3,7 +3,6 @@ package es.erlantzg.controladores;
 import es.erlantzg.dao.PersonaDAO;
 import es.erlantzg.modelos.Persona;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -17,16 +16,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 /**
  * Controlador de la vista "visualizarCliente.fxml".
  * Gestiona la interacción entre la interfaz gráfica (FXML) y los datos de tipo {@link Persona}
  * Permite añadir, eliminar y restaurar filas en una tabla de personas.
- * Se realizan de forma asincrona en hilos en segundo plano para evitar bloquear la interfaz de usuario.
+ * Las operaciones con la base de datos se realizan de forma asincrona en hilos en segundo plano,
+ * para mantener la interfaz gráfica receptiva y evitar bloqueos.
  *
- * @author Erlantz García
+ * @author Erlantz
  * @version 1.0
  */
 public class VisualizarCliente {
@@ -66,25 +65,25 @@ public class VisualizarCliente {
     /** Logger para esta clase */
     private static final Logger logger = LoggerFactory.getLogger(VisualizarCliente.class);
 
-    /** DAO para acceder y manipular la entidad Persona en la base de datos */
+    /** DAO para acceder y manipular la entidad Persona */
     private PersonaDAO pDAO;
 
     /**
      * Inicializa el controlador.
-     * Configura las columnas de la tabla para enlazar con las propiedades de {@link Persona} y carga las personas desde la base de datos
+     * Configura las columnas de la tabla para enlazar con las propiedades de {@link Persona} y carga las personas desde la base de datos.
      */
     @FXML
     public void initialize(){
         pDAO = new PersonaDAO();
         logger.info("Inicializando controlador VisualizarCliente");
         vincularColumnas();
-        cargarPersonasAsync();
+        cargarPersonas();
     }
 
     /**
      * Metodo que se ejecuta al pulsar el botón "Añadir".
      * Válida que todos los campos estén completos.
-     * Inserta una nueva persona en la base de datos mediante una tarea asincrona
+     * Inserta una nueva persona en la base de datos de forma asíncrona
      * Limpia los campos del formulario tras añadirlos.
      */
     @FXML
@@ -101,35 +100,26 @@ public class VisualizarCliente {
 
         Persona p = new Persona(nombre, apellidos, cumple);
 
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
-                pDAO.insertarPersona(p);
+        pDAO.insertarPersona(p)
+            .thenAccept(personaInsertada -> Platform.runLater(() -> {
+                tablaPersonas.getItems().add(personaInsertada);
+                limpiarCampos();
+                logger.info("Personas añadida asincrónicamente: {}", personaInsertada);
+            }))
+            .exceptionally(ex -> {
+                Platform.runLater(() -> {
+                    logger.error("Error insertando persona", ex);
+                    mandarAlertas(Alert.AlertType.ERROR, "Error", "No se ha podido insertar la persona", ex.getMessage());
+                });
                 return null;
-            }
-        };
-
-        task.setOnSucceeded(e -> {
-            tablaPersonas.getItems().add(p);
-            limpiarCampos();
-            logger.info("Personas añadida asincrónicamente: {}", p);
-        });
-
-        task.setOnFailed(e -> {
-            Throwable ex = task.getException();
-            logger.error("Error insertando persona", ex);
-            mandarAlertas(Alert.AlertType.ERROR, "Error", "No se ha podido insertar la persona", ex.getMessage());
-        });
-
-        new Thread(task).start();
+            });
     }
 
     /**
      * Metodo que se ejecuta al pulsar el botón "Eliminar fila seleccionada".
      * Solicita confirmación antes de eliminar.
-     * Elimina la persona seleccionada de la base de datos y actualiza la tabla,
-     * mediante una tarea asincrona para evitar bloqueos en la interfaz.
-     * Muestra alertas cuando ocurra algún error.
+     * Elimina la persona seleccionada de la base de datos y actualiza la tabla.
+     * Muestra alertas en caso de error.
      */
     @FXML
     void btnEliminarFilaSelec() {
@@ -144,26 +134,18 @@ public class VisualizarCliente {
             return;
         }
 
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
-                pDAO.eliminarPersona(pSelec.getId());
+        pDAO.eliminarPersona(pSelec.getId())
+            .thenRun(() -> Platform.runLater(() -> {
+                tablaPersonas.getItems().remove(pSelec);
+                logger.info("Personas eliminada asincrónicamente: {}", pSelec);
+            }))
+            .exceptionally(ex -> {
+                Platform.runLater(() -> {
+                    logger.error("Error eliminando persona", ex);
+                    mandarAlertas(Alert.AlertType.ERROR, "Error", "No se ha podido eliminar la persona", ex.getMessage());
+                });
                 return null;
-            }
-        };
-
-        task.setOnSucceeded(e -> {
-            tablaPersonas.getItems().remove(pSelec);
-            logger.info("Personas eliminada asincrónicamente: {}", pSelec);
-        });
-
-        task.setOnFailed(e -> {
-            Throwable ex = task.getException();
-            logger.error("Error eliminando persona", ex);
-            mandarAlertas(Alert.AlertType.ERROR, "Error", "No se ha podido eliminar la persona", ex.getMessage());
-        });
-
-        new Thread(task).start();
+            });
     }
 
     /**
@@ -175,7 +157,7 @@ public class VisualizarCliente {
     void btnRestaurarFilas() {
         try {
             tablaPersonas.getItems().clear();
-            cargarPersonasAsync();
+            cargarPersonas();
             logger.info("Tabla restaurada con personas");
         } catch (Exception e) {
             logger.error("Error al restaurar filas: {}", e.getMessage());
@@ -205,6 +187,7 @@ public class VisualizarCliente {
 
     /**
      * Cierra la aplicación JavaFX terminando la ejecución de forma ordenada.
+     * Solicita confirmación al usuario antes de cerrar.
      */
     @FXML
     void menuCerrar() {
@@ -235,30 +218,21 @@ public class VisualizarCliente {
     }
 
     /**
-     * Carga todas las personas desde la base de datos utilizando una tarea en segundo plano.
-     * Una vez completada, actualiza la tabla con los resultados en el hilo de la interfaz.
+     * Carga todas las personas desde la base de datos de forma asíncrona y actualiza la tabla en e hilo de la interfaz gráfica.
      */
-    private void cargarPersonasAsync() {
-        Task<List<Persona>> task = new Task<>() {
-            @Override
-            protected List<Persona> call() {
-                return pDAO.obtenerTodasPersonas();
-            }
-        };
-
-        task.setOnSucceeded(e -> {
-            List<Persona> personas = task.getValue();
-            tablaPersonas.getItems().setAll(personas);
-            logger.info("Personas cargadas asincrónicamente: {}", personas.size());
-        });
-
-        task.setOnFailed(e -> {
-            Throwable ex = task.getException();
-            logger.error("Error al cargar las personas", ex);
-            mandarAlertas(Alert.AlertType.ERROR, "Error", "Fallo al cargar los datos", ex.getMessage());
-        });
-
-        new Thread(task).start();
+    private void cargarPersonas() {
+        pDAO.obtenerTodasPersonas()
+            .thenAccept(personas -> Platform.runLater(() -> {
+                tablaPersonas.getItems().setAll(personas);
+                logger.info("Personas cargadas asincrónicamente: {}", personas.size());
+            }))
+            .exceptionally(ex -> {
+               Platform.runLater(() -> {
+                   logger.error("Error al cargar las personas", ex);
+                   mandarAlertas(Alert.AlertType.ERROR, "Error", "Fallo al cargar los datos", ex.getMessage());
+               });
+               return null;
+            });
     }
 
     /**
