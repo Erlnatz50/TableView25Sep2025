@@ -6,7 +6,7 @@ import java.time.LocalDate;
  * Representa una persona con un identificador, nombre, apellido y fecha de cumpleaños.
  * Incluye getters y setters para cada propiedad y un metodo {@link #toString()}.
  *
- * @author Erlantz García
+ * @author Erlantz
  * @version 1.0
  */
 public class Persona {

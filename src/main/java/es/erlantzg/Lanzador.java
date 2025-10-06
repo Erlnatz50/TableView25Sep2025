@@ -5,7 +5,7 @@ package es.erlantzg;
  * Se utiliza cuando se necesita un punto de entrada separado para empaquetar
  * o ejecutar la aplicación, como: crear un JAR ejecutable.
  *
- * @author Erlantz Garcia
+ * @author Erlantz
  * @version 1.0
  */
 public class Lanzador {

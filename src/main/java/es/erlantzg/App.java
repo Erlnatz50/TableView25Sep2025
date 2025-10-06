@@ -8,6 +8,9 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 /**
  * Clase principal de la aplicación JavaFX.
  * Esta clase extiende {@link Application} y se encarga de:
@@ -17,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * - Registrar mensajes de log con SLF4J.
  * Contiene también el metodo {@link #main(String[])} para lanzar la aplicación.
  *
- * @author Erlantz García
+ * @author Erlantz
  * @version 1.0
  */
 public class App extends Application {
@@ -36,7 +39,14 @@ public class App extends Application {
     public void start(Stage stage) {
         try{
             logger.debug("Intentando cargar el FXML: /fxml/visualizarCliente.fxml");
-            FXMLLoader loaded = new FXMLLoader(getClass().getResource("/fxml/visualizarCliente.fxml"));
+
+            // Detectar el idioma del sistema
+            Locale locale = Locale.getDefault();
+
+            ResourceBundle bundle = ResourceBundle.getBundle("mensajes", locale);
+
+            FXMLLoader loaded = new FXMLLoader(getClass().getResource("/fxml/visualizarCliente.fxml"), bundle);
+
             Scene scene = new Scene(loaded.load());
             logger.info("FXML cargado correctamente");
 
@@ -58,13 +68,13 @@ public class App extends Application {
             stage.setScene(scene);
             stage.setResizable(true);
             stage.setMinWidth(400);
-            stage.setMinHeight(350);
+            stage.setMinHeight(380);
             stage.setMaxWidth(500);
             stage.setMaxHeight(500);
             stage.show();
 
         } catch (Exception e) {
-            logger.error("Error al intentar cargar la aplicación", e.getMessage());
+            logger.error("Error al intentar cargar la aplicación: {}", e.getMessage());
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Error");
             alerta.setHeaderText("Error al iniciar la aplicación");
@@ -88,6 +98,10 @@ public class App extends Application {
      * @param args Argumentos de línea de comandos (no usados).
      */
     public static void main(String[] args) {
+        // Para eliminar el warning de "args"
+        @SuppressWarnings("unused")
+        final String[] unusedArgs = args;
+
         logger.info("Iniciando aplicación JavaFX...");
         launch();
     }

@@ -5,6 +5,7 @@ module es.erlantzg {
     requires jdk.compiler;
     requires java.desktop;
     requires java.sql;
+    requires jdk.jfr;
 
     opens es.erlantzg.controladores to javafx.fxml;
     opens es.erlantzg.modelos to javafx.base;
