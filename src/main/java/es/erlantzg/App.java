@@ -45,13 +45,13 @@ public class App extends Application {
 
             ResourceBundle bundle = ResourceBundle.getBundle("mensajes", locale);
 
-            FXMLLoader loaded = new FXMLLoader(getClass().getResource("/fxml/visualizarCliente.fxml"), bundle);
+            FXMLLoader loaded = new FXMLLoader(getClass().getResource("/es/erlantzg/fxml/visualizarCliente.fxml"), bundle);
 
             Scene scene = new Scene(loaded.load());
             logger.info("FXML cargado correctamente");
 
             // Comprobar que el archivo de CSS existe y si no mostrar una alerta
-            var archivoCSS = getClass().getResource("/css/estilo.css");
+            var archivoCSS = getClass().getResource("/es/erlantzg/css/estilo.css");
             if(archivoCSS != null){
                 logger.info("CSS cargado correctamente");
                 scene.getStylesheets().add(archivoCSS.toExternalForm());
