@@ -23,6 +23,21 @@ Además, se aplica una hoja de estilos CSS y se registran eventos y errores con 
 - **Manifest:**
   - `MANIFEST.MF`: archivo de manifiesto para empaquetado y ejecución.
 
+## ⚙️ Configuración y uso de la base de datos
+1. Abre el archivo "config.properties" para definir la conexión.
+2. Completa las líneas con tus datos de conexión a la base de datos. Ejemplo:
+    ```bash
+    # URL de conexión a la base de datos
+    url=jdbc:mysql://localhost:3306/personas_db
+    # Usuario para autenticación de la base de datos
+    user=tu_usuario
+    # Contraseña para autenticación de la base de datos
+    password=tu_contraseña
+    ```
+3. Guarda los cambios y verifica que tu servidor de base de datos esté activo.
+4. Si utilizas otro gestor (PostgreSQL, MariaDB...) tendras que ajustar la url.
+5. La clase Conexion.java utiliza los datos para crear automáticamente la conexión.
+
 ## 📈 Funcionalidades principales
 - Visualizar tabla de personas con atributos.
 - Añadir nuevas personas con ID automático.
